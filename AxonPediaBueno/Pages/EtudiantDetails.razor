@@ -15,17 +15,20 @@ else
     <p><strong>Prénom :</strong> @etudiant.Prenom</p>
     <p><strong>Nom :</strong> @etudiant.Nom</p>
     <p><strong>Email :</strong> @etudiant.Email</p>
+
+    <button type="button" onclick="window.location.href='/liste-etudiants'">
+        retour
+    </button>
 }
 
 @code {
     [Parameter]
-    public int Id { get; set; } // Paramètre récupéré de l'URL
+    public int Id { get; set; }
 
     private Etudiant? etudiant;
 
     protected override async Task OnInitializedAsync()
     {
-        // Récupère l'étudiant avec l'identifiant correspondant
         etudiant = await DbContext.Etudiants.FirstOrDefaultAsync(e => e.Id == Id);
     }
 }
