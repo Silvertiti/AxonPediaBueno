@@ -1,34 +1,12 @@
-﻿@page "/etudiant-details/{Id:int}"
-@using AxonPediaBueno.Models
-@using AxonPediaBueno.Data
-@using Microsoft.EntityFrameworkCore
-@inject ApplicationDbContext DbContext
+﻿@page "/test-button"
 
-<h3>Détails de l'étudiant</h3>
+<h3>Test du bouton</h3>
 
-@if (etudiant is null)
-{
-    <p>Chargement...</p>
-}
-else
-{
-    <p><strong>Prénom :</strong> @etudiant.Prenom</p>
-    <p><strong>Nom :</strong> @etudiant.Nom</p>
-    <p><strong>Email :</strong> @etudiant.Email</p>
-
-    <button type="button" onclick="window.location.href='/liste-etudiants'">
-        retour
-    </button>
-}
+<button @onclick="TestMethod">Cliquez-moi</button>
 
 @code {
-    [Parameter]
-    public int Id { get; set; }
-
-    private Etudiant? etudiant;
-
-    protected override async Task OnInitializedAsync()
+    private void TestMethod()
     {
-        etudiant = await DbContext.Etudiants.FirstOrDefaultAsync(e => e.Id == Id);
+        Console.WriteLine("Le bouton a été cliqué !");
     }
 }

@@ -11,6 +11,10 @@
     .form-group {
         margin-bottom: 10px;
     }
+
+    .action-buttons > button {
+        margin-right: 5px;
+    }
 </style>
 
 @if (etudiants is null)
@@ -37,10 +41,13 @@ else
                     <td>@etudiant.Prenom</td>
                     <td>@etudiant.Nom</td>
                     <td>@etudiant.Email</td>
-                    <td>
-                        <!-- Bouton cliquable redirigeant vers la page de détails -->
-                        <button type="button" onclick="window.location.href='@($"/etudiant-details/{etudiant.Id}")'">
+                    <td class="action-buttons">
+                        <button type="button" class="btn btn-primary" onclick="window.location.href='@($"/etudiant-details/{etudiant.Id}")'">
                             Détails
+                        </button>
+                        <button type="button" class="btn btn-danger"
+                                @onclick="async () => await SupprimerEtudiant(etudiant.Id)">
+                            Supprimer
                         </button>
                     </td>
                 </tr>
@@ -80,14 +87,35 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        // Récupérer la liste des étudiants dans la BDD
         etudiants = await DbContext.Etudiants.ToListAsync();
     }
 
     private async Task HandleValidSubmit()
     {
+        // Ajouter le nouvel étudiant à la base de données
         DbContext.Etudiants.Add(newEtudiant);
         await DbContext.SaveChangesAsync();
+        // Actualiser la liste des étudiants
         etudiants = await DbContext.Etudiants.ToListAsync();
         newEtudiant = new Etudiant();
+    }
+
+    private async Task SupprimerEtudiant(int id)
+    {
+        Console.WriteLine($"Tentative de suppression de l'étudiant avec l'ID: {id}");
+        var etudiantToDelete = await DbContext.Etudiants.FindAsync(id);
+        if (etudiantToDelete != null)
+        {
+            DbContext.Etudiants.Remove(etudiantToDelete);
+            await DbContext.SaveChangesAsync();
+            etudiants = await DbContext.Etudiants.ToListAsync();
+            StateHasChanged();  // Pour forcer le rafraîchissement de l'interface
+            Console.WriteLine("Suppression effectuée et liste actualisée");
+        }
+        else
+        {
+            Console.WriteLine("Aucun étudiant trouvé pour cet ID");
+        }
     }
 }
