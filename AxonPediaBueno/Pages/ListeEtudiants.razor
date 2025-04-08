@@ -7,6 +7,12 @@
 
 <h3>Liste des Étudiants</h3>
 
+<style>
+    .form-group {
+        margin-bottom: 10px;
+    }
+</style>
+
 @if (etudiants is null)
 {
     <p>Chargement...</p>
@@ -20,6 +26,7 @@ else
                 <th>Prénom</th>
                 <th>Nom</th>
                 <th>Email</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -30,6 +37,12 @@ else
                     <td>@etudiant.Prenom</td>
                     <td>@etudiant.Nom</td>
                     <td>@etudiant.Email</td>
+                    <td>
+                        <!-- Bouton cliquable redirigeant vers la page de détails -->
+                        <button type="button" onclick="window.location.href='@($"/etudiant-details/{etudiant.Id}")'">
+                            Détails
+                        </button>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -45,20 +58,17 @@ else
 
     <div class="form-group">
         <label for="Prenom">Prénom :</label>
-        <InputText id="Prenom" class="form-control"
-                   @bind-Value="newEtudiant.Prenom" />
+        <InputText id="Prenom" class="form-control" @bind-Value="newEtudiant.Prenom" />
     </div>
 
     <div class="form-group">
         <label for="Nom">Nom :</label>
-        <InputText id="Nom" class="form-control"
-                   @bind-Value="newEtudiant.Nom" />
+        <InputText id="Nom" class="form-control" @bind-Value="newEtudiant.Nom" />
     </div>
 
     <div class="form-group">
         <label for="Email">Email :</label>
-        <InputText id="Email" class="form-control"
-                   @bind-Value="newEtudiant.Email" />
+        <InputText id="Email" class="form-control" @bind-Value="newEtudiant.Email" />
     </div>
     <br />
     <button type="submit" class="btn btn-primary">Envoyer</button>
