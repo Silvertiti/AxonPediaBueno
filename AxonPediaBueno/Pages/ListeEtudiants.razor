@@ -2,6 +2,7 @@
 @using AxonPediaBueno.Models
 @using AxonPediaBueno.Data
 @using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.Forms
 @inject ApplicationDbContext DbContext
 
 <h3>Liste des Étudiants</h3>
@@ -35,16 +36,48 @@ else
     </table>
 }
 
+<hr />
+
+<h3>Ajouter un nouvel étudiant</h3>
+<EditForm Model="newEtudiant" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="Prenom">Prénom :</label>
+        <InputText id="Prenom" class="form-control"
+                   @bind-Value="newEtudiant.Prenom" />
+    </div>
+
+    <div class="form-group">
+        <label for="Nom">Nom :</label>
+        <InputText id="Nom" class="form-control"
+                   @bind-Value="newEtudiant.Nom" />
+    </div>
+
+    <div class="form-group">
+        <label for="Email">Email :</label>
+        <InputText id="Email" class="form-control"
+                   @bind-Value="newEtudiant.Email" />
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Envoyer</button>
+</EditForm>
+
 @code {
     private List<Etudiant>? etudiants;
-    private bool isLoaded;
+    private Etudiant newEtudiant = new Etudiant();
 
     protected override async Task OnInitializedAsync()
     {
-        if (!isLoaded)
-        {
-            etudiants = await DbContext.Etudiants.ToListAsync();
-            isLoaded = true;
-        }
+        etudiants = await DbContext.Etudiants.ToListAsync();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        DbContext.Etudiants.Add(newEtudiant);
+        await DbContext.SaveChangesAsync();
+        etudiants = await DbContext.Etudiants.ToListAsync();
+        newEtudiant = new Etudiant();
     }
 }

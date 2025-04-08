@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using AxonPediaBueno.Models; // si nécessaire pour vos entités
+using AxonPediaBueno.Models;
 
 namespace AxonPediaBueno.Data
 {
