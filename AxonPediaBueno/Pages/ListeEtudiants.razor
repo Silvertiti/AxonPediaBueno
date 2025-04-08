@@ -1,0 +1,50 @@
+﻿@page "/liste-etudiants"
+@using AxonPediaBueno.Models
+@using AxonPediaBueno.Data
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext DbContext
+
+<h3>Liste des Étudiants</h3>
+
+@if (etudiants is null)
+{
+    <p>Chargement...</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Prénom</th>
+                <th>Nom</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var etudiant in etudiants)
+            {
+                <tr>
+                    <td>@etudiant.Id</td>
+                    <td>@etudiant.Prenom</td>
+                    <td>@etudiant.Nom</td>
+                    <td>@etudiant.Email</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Etudiant>? etudiants;
+    private bool isLoaded;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!isLoaded)
+        {
+            etudiants = await DbContext.Etudiants.ToListAsync();
+            isLoaded = true;
+        }
+    }
+}
