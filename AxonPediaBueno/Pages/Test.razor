@@ -1,0 +1,23 @@
+﻿@page "/afficherinput"
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Web
+
+<h3>Afficher le contenu de l'input</h3>
+
+<input type="text" @bind="userInput" placeholder="Entrez du texte ici..." />
+
+<button class="btn btn-primary" @onclick="AfficherContenu">
+    Afficher le contenu
+</button>
+
+<p>Contenu saisi : @contenuAffiche</p>
+
+@code {
+    private string userInput = string.Empty;
+    private string contenuAffiche = string.Empty;
+
+    private void AfficherContenu()
+    {
+        contenuAffiche = userInput;
+    }
+}
