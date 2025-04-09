@@ -87,16 +87,13 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        // Récupérer la liste des étudiants dans la BDD
         etudiants = await DbContext.Etudiants.ToListAsync();
     }
 
     private async Task HandleValidSubmit()
     {
-        // Ajouter le nouvel étudiant à la base de données
         DbContext.Etudiants.Add(newEtudiant);
         await DbContext.SaveChangesAsync();
-        // Actualiser la liste des étudiants
         etudiants = await DbContext.Etudiants.ToListAsync();
         newEtudiant = new Etudiant();
     }
@@ -110,7 +107,7 @@ else
             DbContext.Etudiants.Remove(etudiantToDelete);
             await DbContext.SaveChangesAsync();
             etudiants = await DbContext.Etudiants.ToListAsync();
-            StateHasChanged();  // Pour forcer le rafraîchissement de l'interface
+            StateHasChanged(); 
             Console.WriteLine("Suppression effectuée et liste actualisée");
         }
         else

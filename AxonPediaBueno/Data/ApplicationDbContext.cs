@@ -11,5 +11,8 @@ namespace AxonPediaBueno.Data
         }
 
         public DbSet<Etudiant> Etudiants { get; set; }
+        public DbSet<Paragraphe> Paragraphes { get; set; }
+
+
     }
 }

@@ -1,0 +1,58 @@
+﻿@page "/creer-paragraphe"
+@using AxonPediaBueno.Models
+@using AxonPediaBueno.Data
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext DbContext
+
+<h3>Créer un nouveau paragraphe</h3>
+
+<EditForm Model="nouveauParagraphe" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="Contenu">Contenu :</label>
+        <InputTextArea id="Contenu" class="form-control" @bind-Value="nouveauParagraphe.Contenu" />
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Créer le paragraphe</button>
+</EditForm>
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <div class="alert alert-success mt-3">
+        @message
+    </div>
+}
+
+@if (dernierParagraphe != null)
+{
+    <div class="alert alert-info mt-3">
+        <h4>Dernier paragraphe créé :</h4>
+        <p>@dernierParagraphe.Contenu</p>
+    </div>
+}
+
+@code {
+    private Paragraphe nouveauParagraphe = new Paragraphe();
+    private Paragraphe dernierParagraphe;
+    private string message;
+
+    private async Task HandleValidSubmit()
+    {
+        // Ajout du nouveau paragraphe dans la base de données
+        DbContext.Paragraphes.Add(nouveauParagraphe);
+        await DbContext.SaveChangesAsync();
+
+        message = "Paragraphe créé avec succès !";
+
+        // Récupérer le dernier paragraphe créé en ordonnant par ID décroissant
+        dernierParagraphe = await DbContext.Paragraphes
+                                .OrderByDescending(p => p.Id)
+                                .FirstOrDefaultAsync();
+
+        // Réinitialiser le modèle pour la saisie d'un nouveau paragraphe
+        nouveauParagraphe = new Paragraphe();
+    }
+}
