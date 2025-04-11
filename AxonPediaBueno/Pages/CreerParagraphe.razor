@@ -7,35 +7,37 @@
 @inject ApplicationDbContext DbContext
 @using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.Components.Web
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-      crossorigin="anonymous">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"crossorigin="anonymous">
 
-<div class="container my-4 p-4 border rounded">
-    <h3 class="mb-4">Créer un nouveau paragraphe</h3>
+<style>
+    .input-small {
+        font-size: 0.8rem;
+    }
+</style>
+
+<div class="container my-4 p-4 border rounded" style="max-width: 1200px; margin: auto;">
+    <h3 class="mb-4">Créer un nouveau Articles</h3>
 
     <EditForm Model="nouveauParagraphe" OnValidSubmit="HandleValidSubmit">
         <DataAnnotationsValidator />
         <ValidationSummary />
 
-        <!-- Row 1 : Champs NomArticle et TypeArticle côte à côte -->
         <div class="row mb-3">
             <div class="col-md-6">
                 <label for="NomArticle" class="form-label">Nom de l'article</label>
-                <InputText id="NomArticle" class="form-control" @bind-Value="nouveauParagraphe.NomArticle" />
+                <InputText id="NomArticle" class="form-control input-small" @bind-Value="nouveauParagraphe.NomArticle" />
                 <ValidationMessage For="@(() => nouveauParagraphe.NomArticle)" />
             </div>
             <div class="col-md-6">
                 <label for="TypeArticle" class="form-label">Type d'article</label>
-                <InputText id="TypeArticle" class="form-control" @bind-Value="nouveauParagraphe.TypeArticle" />
+                <InputText id="TypeArticle" class="form-control input-small" @bind-Value="nouveauParagraphe.TypeArticle" />
                 <ValidationMessage For="@(() => nouveauParagraphe.TypeArticle)" />
             </div>
         </div>
 
-        <!-- Row 2 : Menu déroulant pour les styles (placé sous les deux inputs) -->
         <div class="row mb-3">
             <div class="col">
-                <select class="form-select" aria-label="Sélectionner un style" @onchange="OnDropdownChanged">
+                <select class="form-select input-small" aria-label="Sélectionner un style" @onchange="OnDropdownChanged">
                     <option value="">-- Ajouter Style de texte --</option>
                     <option value="AjouterTitre">Ajouter Titre</option>
                     <option value="AjouterSousTitre">Ajouter Sous Titre</option>
@@ -45,14 +47,11 @@
                 </select>
             </div>
         </div>
-
-        <!-- Row 3 : Zone de saisie du contenu et zone d'affichage du rendu côte à côte -->
         <div class="row">
-            <!-- Colonne gauche : saisie du contenu -->
             <div class="col-md-6">
                 <div class="mb-3">
                     <label for="Contenu" class="form-label">Contenu</label>
-                    <InputTextArea id="Contenu" class="form-control"
+                    <InputTextArea id="Contenu" class="form-control input-small"
                                    @bind-Value="nouveauParagraphe.Contenu"
                                    style="height:400px; overflow-y:auto;" />
                 </div>
@@ -66,7 +65,6 @@
                 }
             </div>
 
-            <!-- Colonne droite : affichage du rendu -->
             <div class="col-md-6">
                 <div class="mb-2">
                     <label for="Rendu" class="form-label">Rendu</label>
@@ -103,7 +101,6 @@
 
     private void Test()
     {
-        // Utilisation du helper pour convertir le contenu en HTML
         contenuAffiche = TextFormatter.ConvertTextWithFormatting(nouveauParagraphe.Contenu);
     }
 
