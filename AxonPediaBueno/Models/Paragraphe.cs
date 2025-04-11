@@ -4,10 +4,9 @@ namespace AxonPediaBueno.Models
 {
     public class Paragraphe
     {
-        [Key]
         public int Id { get; set; }
-
-        [Required(ErrorMessage = "Le contenu est requis.")]
-        public string Contenu { get; set; }
+        public string? NomArticle { get; set; }
+        public string? TypeArticle { get; set; }
+        public string? Contenu { get; set; }
     }
 }

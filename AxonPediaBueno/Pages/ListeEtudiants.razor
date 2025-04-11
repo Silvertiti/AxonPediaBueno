@@ -8,13 +8,132 @@
 <h3>Liste des Étudiants</h3>
 
 <style>
-    .form-group {
-        margin-bottom: 10px;
+    body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f7f7f7;
     }
 
+    h3 {
+        margin-top: 1rem;
+        color: #333;
+    }
+
+    /* Style pour le tableau */
+    table.table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #fff;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+        table.table thead th {
+            background-color: #007bff;
+            color: #fff;
+            text-align: left;
+            padding: 0.75rem;
+        }
+
+        table.table tbody td {
+            padding: 0.75rem;
+            border-top: 1px solid #dee2e6;
+        }
+
+        table.table tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+    /* Boutons d'action */
     .action-buttons > button {
         margin-right: 5px;
     }
+
+    /* Styles pour les formulaires */
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    label {
+        font-weight: 600;
+        color: #555;
+    }
+
+    input.form-control,
+    textarea.form-control {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 0.5rem;
+        font-size: 1rem;
+    }
+
+        input.form-control:focus,
+        textarea.form-control:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+    /* Styles pour les zones d'encadrement */
+    .encadre {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 1rem;
+        background-color: #fff;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1rem;
+    }
+
+    /* Ajout d'un espacement vertical */
+    .mt-2 {
+        margin-top: 10px;
+    }
+
+    /* Style global pour les boutons */
+    .btn {
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        font-size: 1rem;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+        color: #fff;
+    }
+
+        .btn-primary:hover {
+            background-color: #0069d9;
+        }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border: none;
+        color: #fff;
+    }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border: none;
+        color: #fff;
+    }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+    .btn-info {
+        background-color: #17a2b8;
+        border: none;
+        color: #fff;
+    }
+
+        .btn-info:hover {
+            background-color: #138496;
+        }
 </style>
 
 @if (etudiants is null)
@@ -59,27 +178,28 @@ else
 <hr />
 
 <h3>Ajouter un nouvel étudiant</h3>
-<EditForm Model="newEtudiant" OnValidSubmit="HandleValidSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+<div class="encadre">
+    <EditForm Model="newEtudiant" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
 
-    <div class="form-group">
-        <label for="Prenom">Prénom :</label>
-        <InputText id="Prenom" class="form-control" @bind-Value="newEtudiant.Prenom" />
-    </div>
+        <div class="form-group">
+            <label for="Prenom">Prénom :</label>
+            <InputText id="Prenom" class="form-control" @bind-Value="newEtudiant.Prenom" />
+        </div>
 
-    <div class="form-group">
-        <label for="Nom">Nom :</label>
-        <InputText id="Nom" class="form-control" @bind-Value="newEtudiant.Nom" />
-    </div>
+        <div class="form-group">
+            <label for="Nom">Nom :</label>
+            <InputText id="Nom" class="form-control" @bind-Value="newEtudiant.Nom" />
+        </div>
 
-    <div class="form-group">
-        <label for="Email">Email :</label>
-        <InputText id="Email" class="form-control" @bind-Value="newEtudiant.Email" />
-    </div>
-    <br />
-    <button type="submit" class="btn btn-primary">Envoyer</button>
-</EditForm>
+        <div class="form-group">
+            <label for="Email">Email :</label>
+            <InputText id="Email" class="form-control" @bind-Value="newEtudiant.Email" />
+        </div>
+        <button type="submit" class="btn btn-primary">Envoyer</button>
+    </EditForm>
+</div>
 
 @code {
     private List<Etudiant>? etudiants;
@@ -107,7 +227,7 @@ else
             DbContext.Etudiants.Remove(etudiantToDelete);
             await DbContext.SaveChangesAsync();
             etudiants = await DbContext.Etudiants.ToListAsync();
-            StateHasChanged(); 
+            StateHasChanged();
             Console.WriteLine("Suppression effectuée et liste actualisée");
         }
         else

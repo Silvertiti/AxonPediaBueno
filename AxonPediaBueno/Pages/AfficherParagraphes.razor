@@ -1,0 +1,62 @@
+﻿@page "/liste-articles-dropdown"
+@using AxonPediaBueno.Models
+@using AxonPediaBueno.Data
+@using Microsoft.EntityFrameworkCore
+@using AxonPediaBueno.Helpers
+@inject ApplicationDbContext DbContext
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Colonne gauche : Menu déroulant affichant les NomArticle -->
+        <div class="col-md-3">
+            <h4>Articles</h4>
+            <select class="form-control" @bind-value="selectedArticleId" @bind-value:event="onchange">
+                <option value="">-- Sélectionnez un article --</option>
+                @foreach (var article in articles)
+                {
+                    <option value="@article.Id">@article.NomArticle</option>
+                }
+            </select>
+        </div>
+
+        <!-- Colonne droite : Affichage du contenu du paragraphe sélectionné -->
+        <div class="col-md-9">
+            @if (selectedArticle != null)
+            {
+                <h2>@selectedArticle.NomArticle</h2>
+                <p><em>@selectedArticle.TypeArticle</em></p>
+                <hr />
+                <div>@((MarkupString)TextFormatter.ConvertTextWithFormatting(selectedArticle.Contenu ?? "Aucun contenu."))</div>
+            }
+            else
+            {
+                <p>Veuillez sélectionner un article dans le menu déroulant pour afficher son contenu.</p>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<Paragraphe> articles = new List<Paragraphe>();
+
+    private int? selectedArticleId
+    {
+        get => _selectedArticleId;
+        set
+        {
+            if (_selectedArticleId != value)
+            {
+                _selectedArticleId = value;
+                selectedArticle = articles.FirstOrDefault(a => a.Id == _selectedArticleId.GetValueOrDefault());
+            }
+        }
+    }
+    private int? _selectedArticleId;
+
+    private Paragraphe? selectedArticle;
+
+    protected override async Task OnInitializedAsync()
+    {
+        articles = await DbContext.Paragraphes.ToListAsync();
+    }
+}
