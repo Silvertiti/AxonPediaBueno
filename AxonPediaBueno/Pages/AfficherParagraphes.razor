@@ -11,25 +11,25 @@
 
 <div class="container-fluid my-4">
     <div class="row">
-        <!-- Colonne gauche : Liste complète des articles -->
+        <!-- Panneau de gauche : Barre de recherche et liste des articles filtrés -->
         <div class="col-md-3">
             <h4>Articles</h4>
+            <!-- Barre de recherche -->
+            <input type="text" placeholder="Rechercher..." @bind="searchTerm" class="form-control mb-3" />
+
             <ul class="list-group">
-                @foreach (var article in articles)
+                @foreach (var article in FilteredArticles)
                 {
-                    <li class="list-group-item @(selectedArticle?.Id == article.Id ? "active" : "")">
-                        <a href="#"
-                           class="text-decoration-none text-reset"
-                           @onclick="() => SelectArticle(article.Id)"
-                           @onclick:preventDefault="true">
-                            @article.NomArticle
-                        </a>
+                    <li class="list-group-item @(selectedArticle?.Id == article.Id ? "active" : "")"
+                        style="cursor: pointer;"
+                        @onclick="@(() => SelectArticle(article.Id))">
+                        @article.NomArticle
                     </li>
                 }
             </ul>
         </div>
 
-        <!-- Colonne droite : Affichage du contenu de l'article sélectionné -->
+        <!-- Panneau de droite : Affichage du contenu de l'article sélectionné -->
         <div class="col-md-9">
             @if (selectedArticle != null)
             {
@@ -51,9 +51,16 @@
 @code {
     private List<Paragraphe> articles = new List<Paragraphe>();
     private Paragraphe? selectedArticle;
+    private string searchTerm = "";
+
+    // Propriété calculée pour filtrer les articles par nom (insensible à la casse)
+    private IEnumerable<Paragraphe> FilteredArticles => string.IsNullOrWhiteSpace(searchTerm)
+        ? articles
+        : articles.Where(a => a.NomArticle.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
 
     protected override async Task OnInitializedAsync()
     {
+        // Chargement de la liste complète des articles depuis la base de données
         articles = await DbContext.Paragraphes.ToListAsync();
     }
 
