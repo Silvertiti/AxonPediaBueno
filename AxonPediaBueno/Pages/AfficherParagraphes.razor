@@ -1,37 +1,48 @@
-﻿@page "/liste-articles-dropdown"
+﻿@page "/liste-articles"
 @using AxonPediaBueno.Models
 @using AxonPediaBueno.Data
 @using Microsoft.EntityFrameworkCore
 @using AxonPediaBueno.Helpers
+@using Microsoft.AspNetCore.Components.Web
 @inject ApplicationDbContext DbContext
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
-<div class="container-fluid">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+<div class="container-fluid my-4">
     <div class="row">
-        <!-- Colonne gauche : Menu déroulant affichant les NomArticle -->
+        <!-- Colonne gauche : Liste complète des articles -->
         <div class="col-md-3">
             <h4>Articles</h4>
-            <select class="form-control" @bind-value="selectedArticleId" @bind-value:event="onchange">
-                <option value="">-- Sélectionnez un article --</option>
+            <ul class="list-group">
                 @foreach (var article in articles)
                 {
-                    <option value="@article.Id">@article.NomArticle</option>
+                    <li class="list-group-item @(selectedArticle?.Id == article.Id ? "active" : "")">
+                        <a href="#"
+                           class="text-decoration-none text-reset"
+                           @onclick="() => SelectArticle(article.Id)"
+                           @onclick:preventDefault="true">
+                            @article.NomArticle
+                        </a>
+                    </li>
                 }
-            </select>
+            </ul>
         </div>
 
-        <!-- Colonne droite : Affichage du contenu du paragraphe sélectionné -->
+        <!-- Colonne droite : Affichage du contenu de l'article sélectionné -->
         <div class="col-md-9">
             @if (selectedArticle != null)
             {
                 <h2>@selectedArticle.NomArticle</h2>
                 <p><em>@selectedArticle.TypeArticle</em></p>
                 <hr />
-                <div>@((MarkupString)TextFormatter.ConvertTextWithFormatting(selectedArticle.Contenu ?? "Aucun contenu."))</div>
+                <div>
+                    @((MarkupString)TextFormatter.ConvertTextWithFormatting(selectedArticle.Contenu ?? "Aucun contenu."))
+                </div>
             }
             else
             {
-                <p>Veuillez sélectionner un article dans le menu déroulant pour afficher son contenu.</p>
+                <p>Cliquez sur un article dans la liste pour afficher son contenu.</p>
             }
         </div>
     </div>
@@ -39,25 +50,15 @@
 
 @code {
     private List<Paragraphe> articles = new List<Paragraphe>();
-
-    private int? selectedArticleId
-    {
-        get => _selectedArticleId;
-        set
-        {
-            if (_selectedArticleId != value)
-            {
-                _selectedArticleId = value;
-                selectedArticle = articles.FirstOrDefault(a => a.Id == _selectedArticleId.GetValueOrDefault());
-            }
-        }
-    }
-    private int? _selectedArticleId;
-
     private Paragraphe? selectedArticle;
 
     protected override async Task OnInitializedAsync()
     {
         articles = await DbContext.Paragraphes.ToListAsync();
+    }
+
+    private void SelectArticle(int id)
+    {
+        selectedArticle = articles.FirstOrDefault(a => a.Id == id);
     }
 }
