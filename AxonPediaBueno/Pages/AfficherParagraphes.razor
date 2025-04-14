@@ -11,7 +11,6 @@
 
 <div class="container-fluid my-4">
     <div class="row">
-        <!-- Panneau de gauche : Barre de recherche et liste des articles filtrés -->
         <div class="col-md-3">
             <h4>Articles</h4>
             <input type="text" placeholder="Rechercher..." @bind="searchTerm" class="form-control mb-3" />
@@ -28,7 +27,6 @@
             </ul>
         </div>
 
-        <!-- Panneau de droite : Affichage du contenu de l'article sélectionné -->
         <div class="col-md-9">
             @if (selectedArticle != null)
             {
@@ -52,14 +50,12 @@
     private Paragraphe? selectedArticle;
     private string searchTerm = "";
 
-    // Propriété calculée pour filtrer les articles par nom (insensible à la casse)
     private IEnumerable<Paragraphe> FilteredArticles => string.IsNullOrWhiteSpace(searchTerm)
         ? articles
         : articles.Where(a => a.NomArticle.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
 
     protected override async Task OnInitializedAsync()
     {
-        // Chargement de la liste complète des articles depuis la base de données
         articles = await DbContext.Paragraphes.ToListAsync();
     }
 
