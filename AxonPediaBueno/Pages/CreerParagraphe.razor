@@ -7,7 +7,9 @@
 @inject ApplicationDbContext DbContext
 @using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.Components.Web
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"crossorigin="anonymous">
+@using System.IO
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
 <style>
     .input-small {
@@ -16,7 +18,7 @@
 </style>
 
 <div class="container my-4 p-4 border rounded" style="max-width: 1200px; margin: auto;">
-    <h3 class="mb-4">Créer un nouveau Articles</h3>
+    <h3 class="mb-4">Créer un nouvel article</h3>
 
     <EditForm Model="nouveauParagraphe" OnValidSubmit="HandleValidSubmit">
         <DataAnnotationsValidator />
@@ -36,29 +38,38 @@
         </div>
 
         <div class="row mb-3">
-            <div class="col">
-                <select class="form-select input-small" aria-label="Sélectionner un style" @onchange="OnDropdownChanged">
-                    <option value="">-- Ajouter Style de texte --</option>
-                    <option value="AjouterTitre">Ajouter Titre</option>
-                    <option value="AjouterSousTitre">Ajouter Sous Titre</option>
+            <div class="col-md-6">
+                <select class="form-select" @onchange="OnDropdownChanged">
+                    <option value="">-- Ajouter un style de texte --</option>
                     <option value="AjouterGras">Ajouter Texte en Gras</option>
                     <option value="AjouterItalique">Ajouter Texte en Italique</option>
-                    <option value="AjouterWeb">Ajouter lien HyperTexte</option>
+                    <option value="AjouterWeb">Ajouter Lien Hypertexte</option>
+                    <option value="AjouterListeNonOrdonnee">Ajouter Liste à Puces</option>
+                    <option value="AjouterTitre1">Ajouter Titre Niveau 1</option>
+                    <option value="AjouterTitre2">Ajouter Titre Niveau 2</option>
+                    <option value="AjouterTitre3">Ajouter Titre Niveau 3</option>
+                    <option value="AjouterTitre4">Ajouter Titre Niveau 4</option>
+                    <option value="AjouterTitre5">Ajouter Titre Niveau 5</option>
                 </select>
             </div>
+
+            <div class="col-md-6 d-flex align-items-end">
+                <InputFile OnChange="HandleFileUpload" />
+            </div>
         </div>
+
         <div class="row">
             <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="Contenu" class="form-label">Contenu</label>
-                    <InputTextArea id="Contenu" class="form-control input-small"
-                                   @bind-Value="nouveauParagraphe.Contenu"
-                                   style="height:400px; overflow-y:auto;" />
-                </div>
-                <div class="mt-2">
-                    <button type="submit" class="btn btn-primary">Créer le paragraphe</button>
+                <label for="Contenu" class="form-label">Contenu</label>
+                <InputTextArea id="Contenu" class="form-control input-small"
+                               @bind-Value="nouveauParagraphe.Contenu"
+                               style="height:400px; overflow-y:auto;" />
+
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-primary">Créer l'article</button>
                     <button type="button" class="btn btn-secondary ms-2" @onclick="Test">Actualiser</button>
                 </div>
+
                 @if (!string.IsNullOrEmpty(message))
                 {
                     <div class="alert alert-success mt-3">@message</div>
@@ -66,14 +77,12 @@
             </div>
 
             <div class="col-md-6">
-                <div class="mb-2">
-                    <label for="Rendu" class="form-label">Rendu</label>
-                </div>
+                <label for="Rendu" class="form-label">Rendu</label>
                 <div class="border p-3" style="min-height:360px;">
                     <div style="height:360px; overflow-y:auto;">
                         @if (!string.IsNullOrEmpty(contenuAffiche))
                         {
-                            @((MarkupString)contenuAffiche)
+                            @((MarkupString)TextFormatter.ConvertTextWithFormatting(nouveauParagraphe.Contenu))
                         }
                         else
                         {
@@ -85,6 +94,7 @@
         </div>
     </EditForm>
 </div>
+
 
 @code {
     private Paragraphe nouveauParagraphe = new Paragraphe();
@@ -109,17 +119,45 @@
         var action = e.Value?.ToString();
         switch (action)
         {
-            case "AjouterTitre":AjouterTitre();break;
-            case "AjouterSousTitre":AjouterSousTitre();break;
-            case "AjouterGras":AjouterGras();break;
-            case "AjouterItalique":AjouterItalique();break;
-            case "AjouterWeb":AjouterWeb();break;
+            case "AjouterTitre1": AjouterTitre(1); break;
+            case "AjouterTitre2": AjouterTitre(2); break;
+            case "AjouterTitre3": AjouterTitre(3); break;
+            case "AjouterTitre4": AjouterTitre(4); break;
+            case "AjouterTitre5": AjouterTitre(5); break;
+            case "AjouterGras": AjouterGras(); break;
+            case "AjouterItalique": AjouterItalique(); break;
+            case "AjouterWeb": AjouterWeb(); break;
+            case "AjouterListeNonOrdonnee": AjouterListeNonOrdonnee(); break;
         }
     }
 
-    private void AjouterWeb() { nouveauParagraphe.Contenu += "\n[web]Nom du Lien @ Lien;"; }
-    private void AjouterItalique() { nouveauParagraphe.Contenu += "\n[ita]Texte en Italique;"; }
-    private void AjouterGras() { nouveauParagraphe.Contenu += "\n[g]Texte en Gras;"; }
-    private void AjouterSousTitre() { nouveauParagraphe.Contenu += "\n[s-t]Titre;"; }
-    private void AjouterTitre() { nouveauParagraphe.Contenu += "\n[t]Titre;"; }
+    private void AjouterWeb() => nouveauParagraphe.Contenu += "\n[web]Nom du Lien @ Lien;";
+    private void AjouterItalique() => nouveauParagraphe.Contenu += "\n[ita]Texte en Italique;";
+    private void AjouterGras() => nouveauParagraphe.Contenu += "\n[g]Texte en Gras;";
+    private void AjouterTitre(int niveau) => nouveauParagraphe.Contenu += $"\n[t{niveau}]Titre niveau {niveau};";
+    private void AjouterListeNonOrdonnee() => nouveauParagraphe.Contenu += "\n[ul]\n- Élément 1\n- Élément 2\n- Élément 3\n;";
+
+    private async Task HandleFileUpload(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+
+        if (file != null)
+        {
+            var fileName = Path.GetRandomFileName() + Path.GetExtension(file.Name);
+            var uploadPath = Path.Combine("wwwroot", "uploads");
+
+            if (!Directory.Exists(uploadPath))
+                Directory.CreateDirectory(uploadPath);
+
+            var filePath = Path.Combine(uploadPath, fileName);
+
+            await using var fs = new FileStream(filePath, FileMode.Create);
+            await file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024).CopyToAsync(fs);
+
+            var publicUrl = $"/uploads/{fileName}";
+            nouveauParagraphe.Contenu += $"\n[img]{publicUrl};";
+        }
+    }
 }
+
+
