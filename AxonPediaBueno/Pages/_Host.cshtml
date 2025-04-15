@@ -11,6 +11,35 @@
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
     <link href="css/site.css" rel="stylesheet" />
 </head>
+<script>
+    window.setupImageZoom = function () {
+        setTimeout(() => {
+            const imgs = document.querySelectorAll('img:not(.clickable-image)');
+            imgs.forEach(img => {
+                img.classList.add('clickable-image');
+                img.addEventListener('click', function () {
+                    const modal = document.getElementById('fullscreenImageModal');
+                    const modalImg = document.getElementById('fullscreenImage');
+                    modalImg.src = img.src;
+                    modal.classList.add('show');
+                });
+            });
+        }, 300); // permet à Blazor de rendre les images avant d’ajouter les events
+    };
+
+    window.hideFullscreenImage = function () {
+        const modal = document.getElementById('fullscreenImageModal');
+        const modalImg = document.getElementById('fullscreenImage');
+        modal.classList.remove('show');
+        modalImg.src = "";
+    };
+</script>
+
+
+
+
+
+
 <body>
     <app>
         @(await Html.RenderComponentAsync<App>(RenderMode.ServerPrerendered))
@@ -18,5 +47,7 @@
     </app>
 
     <script src="_framework/blazor.server.js"></script>
+
+
 </body>
 </html>

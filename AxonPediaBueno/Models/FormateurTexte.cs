@@ -13,7 +13,7 @@ namespace AxonPediaBueno.Helpers
             result = Regex.Replace(result, @"\[t3\](.*?)\;", "<h3>$1</h3>", RegexOptions.Singleline);
             result = Regex.Replace(result, @"\[t4\](.*?)\;", "<h4>$1</h4>", RegexOptions.Singleline);
             result = Regex.Replace(result, @"\[t5\](.*?)\;", "<h5>$1</h5>", RegexOptions.Singleline);
-            result = Regex.Replace(result, @"\[img\](.*?)\;", "<img src=\"$1\" style=\"max-width: 70%; height: auto;\" class=\"my-3\" />", RegexOptions.Singleline);
+            result = Regex.Replace(result, @"\[img\](.*?)\;", "<img src=\"$1\" class=\"clickable-image\" style=\"max-width: 100%; height: auto; cursor: zoom-in;\" />", RegexOptions.Singleline);
             result = Regex.Replace(result, @"\[g\](.*?)\;", "<strong>$1</strong>", RegexOptions.Singleline);
             result = Regex.Replace(result, @"\[ita\](.*?)\;", "<em>$1</em>", RegexOptions.Singleline);
             result = Regex.Replace(result, @"\[web\](.+?)\s*@\s*(.+?)\;", m =>
